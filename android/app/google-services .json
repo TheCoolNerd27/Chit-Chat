@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "23998522817",
+    "firebase_url": "https://chitchat-a6cff.firebaseio.com",
+    "project_id": "chitchat-a6cff",
+    "storage_bucket": "chitchat-a6cff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23998522817:android:5396a0619a0da44bcefb40",
+        "android_client_info": {
+          "package_name": "thecoolnerd.chitchat.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "23998522817-9ks0gusk1c1t859q4tqdutf6u4op39h7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfWPNvQJ5W-YFayksZ8re7zuagnlUSH0w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "23998522817-9ks0gusk1c1t859q4tqdutf6u4op39h7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
