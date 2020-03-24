@@ -4,6 +4,8 @@ import 'package:chitchat/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:chitchat/profile.dart';
+import 'package:chitchat/Chats.dart';
 void main(){
   setupLocator();
   runApp(MyApp());
@@ -34,6 +36,9 @@ class MyApp extends StatelessWidget {
         backgroundColor: Colors.amber[200],
       ),
       home:Login(),
+    routes: {
+        '/chats':(context)=>ChatScreen(),
+    },
     //MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -75,6 +80,7 @@ class _LoginState extends State<Login> {
                 textColor: Colors.black,
                 fontSize: 16.0
             );
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Profile(usr)));
             //service=true;
           } else {
             setState(() {

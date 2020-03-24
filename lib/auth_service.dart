@@ -59,6 +59,8 @@ class AuthenticationService {
             final FirebaseUser currentUser = await auth.currentUser();
             assert(user.uid == currentUser.uid);
             return user != null;
+
+
         }
         catch (e) {
             return e.message;
