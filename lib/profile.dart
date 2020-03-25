@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chitchat/service_locator.dart';
 import 'package:chitchat/auth_service.dart';
@@ -26,17 +27,19 @@ class _ProfileState extends State<Profile> {
     setState(() {
       nickname = widget.user.displayName;
     });
+
     controllerNickname = new TextEditingController(text: nickname);
     controllerAboutMe = new TextEditingController();
   }
 
-  void submitData() {
+  void submitData() async{
+    prefs=await SharedPreferences.getInstance();
     var ref = Firestore.instance
         .collection("Users")
         .document(widget.user.uid)
         .updateData({"Display Name": nickname, "About Me": aboutme}).then(
             (value) async {
-      await prefs.setString('nickname', nickname);
+      var r=await prefs.setString('nickname', nickname);
       await prefs.setString('aboutMe', aboutme);
       await prefs.setString('uid', widget.user.uid);
 
@@ -67,40 +70,53 @@ class _ProfileState extends State<Profile> {
       appBar: AppBar(
         title: Text("My Profile"),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-              child: Center(
-            child: CircleAvatar(
-                backgroundImage: NetworkImage(widget.user.photoUrl)),
-          )),
-          TextField(
-            controller: controllerNickname,
-            decoration: InputDecoration(labelText: 'Display Name'),
-            onSubmitted: (value) {
-              setState(() {
-                nickname = value;
-              });
-            },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+
+
+            //padding:EdgeInsets.only(left: 0.0, right: 0.0, top: 0.0, bottom: 0.0),
+            children: <Widget>[
+              Container(
+                  child: Center(
+                child: CircleAvatar(
+                    backgroundImage: NetworkImage(widget.user.photoUrl),
+                  radius:40.0 ,
+                ),
+              ),),
+              TextField(
+                controller: controllerNickname,
+                decoration: InputDecoration(labelText: 'Display Name'),
+                onSubmitted: (value) {
+                  setState(() {
+                    nickname = value;
+                  });
+                },
+              ),
+              TextField(
+                controller: controllerAboutMe,
+                decoration: InputDecoration(
+                  labelText: 'About me',
+                ),
+                onSubmitted: (value) {
+                  setState(() {
+                    aboutme = value;
+                  });
+                },
+              ),
+              SizedBox(
+                height: 15.0,
+              ),
+              RaisedButton(
+                  onPressed: () => submitData(),
+                  child: Text("Submit"),
+                  textColor: Colors.black,
+                  color: Colors.orange),
+            ],
           ),
-          TextField(
-            controller: controllerAboutMe,
-            decoration: InputDecoration(
-              labelText: 'About me',
-            ),
-            onSubmitted: (value) {
-              setState(() {
-                aboutme = value;
-              });
-            },
-          ),
-          RaisedButton(
-              onPressed: () => submitData(),
-              child: Text("Submit"),
-              textColor: Colors.black,
-              color: Colors.orange),
-        ],
+        ),
       ),
     );
   }

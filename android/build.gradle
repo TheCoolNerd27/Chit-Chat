@@ -17,6 +17,11 @@ allprojects {
         google()
         jcenter()
     }
+    /*gradle.projectsEvaluated{
+        tasks.withType(JavaCompile) {
+                    options.compileArgs<<"-Xlint:deprecation"
+                }
+    }*/
 }
 
 rootProject.buildDir = '../build'

@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:23998522817:android:5396a0619a0da44bcefb40",
+        "mobilesdk_app_id": "1:23998522817:android:d52cd1b211c626aacefb40",
         "android_client_info": {
-          "package_name": "thecoolnerd.chitchat.com"
+          "package_name": "thecoolnerd.chitchat"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "23998522817-tjuk45lb6dd8sfhp4roqjf76te81evtj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "thecoolnerd.chitchat",
+            "certificate_hash": "65865985d1f2c74942284aac4e2b35f44af4333b"
+          }
+        },
         {
           "client_id": "23998522817-9ks0gusk1c1t859q4tqdutf6u4op39h7.apps.googleusercontent.com",
           "client_type": 3

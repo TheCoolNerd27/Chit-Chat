@@ -8,6 +8,7 @@ import 'package:chitchat/profile.dart';
 import 'package:chitchat/Chats.dart';
 void main(){
   setupLocator();
+
   runApp(MyApp());
 
 }
@@ -18,6 +19,21 @@ final AuthenticationService _authenticationService =
 locator<AuthenticationService>();
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  var usr;
+  bool render()  {
+    bool res;
+    usr= _authenticationService.getUSer();
+    if(usr == null)
+      res=true;
+    else
+      res=false;
+
+    print(res);
+    return res;
+
+
+
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -35,9 +51,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.orange,
         backgroundColor: Colors.amber[200],
       ),
-      home:Login(),
+      home:render()?Login():ChatList(),
     routes: {
-        '/chats':(context)=>ChatScreen(),
+        '/chats':(context)=>ChatList(),
+        '/login':(context)=>Login(),
     },
     //MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -57,16 +74,17 @@ class _LoginState extends State<Login> {
   async{
     var usr;
     var res=await _authenticationService.signInWithGoogle();
+    print(res);
     if(res is bool)
     {
       if(res)
       {
-        usr=_authenticationService.getUSer();
-        setState(() {
+        usr=await _authenticationService.getUSer();
+
           if (usr != null) {
             setState(() {
               _success = true;
-              usern = usr;
+              //usern = usr;
               _userID=usr.uid;
 
             });
@@ -80,6 +98,7 @@ class _LoginState extends State<Login> {
                 textColor: Colors.black,
                 fontSize: 16.0
             );
+            print("Hello");
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => Profile(usr)));
             //service=true;
           } else {
@@ -97,7 +116,7 @@ class _LoginState extends State<Login> {
             );
 
           }
-        });
+
       }
 
     }
