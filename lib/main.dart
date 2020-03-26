@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:chitchat/profile.dart';
 import 'package:chitchat/Chats.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 void main(){
   setupLocator();
 
@@ -68,10 +69,11 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool _success;
   FirebaseUser usern;
-
+  SharedPreferences prefs;
   String _userID;
   void googleSignIn()
   async{
+    prefs=await SharedPreferences.getInstance();
     var usr;
     var res=await _authenticationService.signInWithGoogle();
     print(res);
@@ -89,6 +91,7 @@ class _LoginState extends State<Login> {
 
             });
             print('$usern');
+            await prefs.setString('uid', usr.uid);
             Fluttertoast.showToast(
                 msg: "Login Successful",
                 toastLength: Toast.LENGTH_SHORT,
@@ -99,7 +102,20 @@ class _LoginState extends State<Login> {
                 fontSize: 16.0
             );
             print("Hello");
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Profile(usr)));
+
+            var ref=Firestore.instance.collection("Users").document(usr.uid).get().then((doc){
+              var dc=doc['About Me'];
+              if(dc==null||doc==null)
+                {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => Profile(usr)));
+                }
+              else
+                {
+                  Navigator.pushNamed(context, '/chats');
+                }
+
+            });
+
             //service=true;
           } else {
             setState(() {
@@ -128,9 +144,11 @@ class _LoginState extends State<Login> {
         appBar: AppBar(
         title: Text("Login"),),
     body:Container(
+      padding:EdgeInsets.all(25.0) ,
       child:Center(
-        child:RaisedButton(
 
+        child:RaisedButton(
+          padding: EdgeInsets.all(15.0),
           onPressed: () {
 
             googleSignIn();
@@ -141,7 +159,9 @@ class _LoginState extends State<Login> {
               Image.asset('assets/images/google.png',
                   height:30.0,width:30.0),
               SizedBox( width:30.0),
-              Text('Sign in with Google'),
+              Text('Sign in with Google',style: TextStyle(
+                fontSize: 15.0,
+              ),),
             ],
           ),
           textColor: Colors.black,

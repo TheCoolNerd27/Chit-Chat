@@ -5,7 +5,7 @@ import 'package:chitchat/service_locator.dart';
 import 'package:chitchat/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Profile extends StatefulWidget {
   FirebaseUser user;
@@ -19,7 +19,7 @@ class _ProfileState extends State<Profile> {
   String nickname, aboutme;
   TextEditingController controllerNickname;
   TextEditingController controllerAboutMe;
-  SharedPreferences prefs;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -33,15 +33,14 @@ class _ProfileState extends State<Profile> {
   }
 
   void submitData() async{
-    prefs=await SharedPreferences.getInstance();
+
     var ref = Firestore.instance
         .collection("Users")
         .document(widget.user.uid)
         .updateData({"Display Name": nickname, "About Me": aboutme}).then(
             (value) async {
-      var r=await prefs.setString('nickname', nickname);
-      await prefs.setString('aboutMe', aboutme);
-      await prefs.setString('uid', widget.user.uid);
+
+
 
       Fluttertoast.showToast(
           msg: "Update Successful",

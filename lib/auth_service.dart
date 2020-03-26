@@ -48,6 +48,7 @@ class AuthenticationService {
             assert(user.displayName != null);
             assert(!user.isAnonymous);
             assert(await user.getIdToken() != null);
+
             if (authResult.additionalUserInfo.isNewUser) {
                 var ref = Firestore.instance.collection('Users').document(
                     user.uid);
