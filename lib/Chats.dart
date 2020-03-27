@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'package:chitchat/ChatScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:chitchat/service_locator.dart';
 import 'package:chitchat/auth_service.dart';
@@ -18,6 +19,7 @@ class ChatList extends StatefulWidget {
 class _ChatListState extends State<ChatList> {
   String uid;
   SharedPreferences prefs;
+
 
   void getUID() async {
     prefs = await SharedPreferences.getInstance();
@@ -65,7 +67,9 @@ class _ChatListState extends State<ChatList> {
             CircleAvatar(backgroundImage: NetworkImage(Doc["Display Photo"])),
         title: new Text(Doc['Display Name']),
         subtitle: new Text(Doc['About Me']),
-        onTap: () {});
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatScreen(Doc.documentID,Doc)));
+        });
   }
 
   Future<bool> onBackPress() {

@@ -50,7 +50,8 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.orange,
-        backgroundColor: Colors.amber[200],
+        //scaffoldBackgroundColor: Colors.amber[200],
+
       ),
       home:render()?Login():ChatList(),
     routes: {
