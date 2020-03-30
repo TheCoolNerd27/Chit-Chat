@@ -58,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
                          width: 200.0,
                          decoration: BoxDecoration(color: Colors.amber[600], borderRadius: BorderRadius.circular(8.0)),
 
-                         margin: EdgeInsets.only(left: 10.0,top:15,bottom:10.0),
+                         margin: EdgeInsets.only(left: 10.0,top:15),
                      ),
 
 
@@ -71,7 +71,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             .format(DateTime.fromMillisecondsSinceEpoch(int.parse(Doc['timestamp']))),
                         style: TextStyle(color: Colors.grey, fontSize: 12.0, fontStyle: FontStyle.italic),
                     ),
-                    margin: EdgeInsets.only(left: 10.0, top: 5.0, bottom: 5.0),
+                    margin: EdgeInsets.only(left: 10.0, top: 5.0, bottom: 25.0),
                 )
             ],
 
@@ -92,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         width: 200.0,
                         decoration: BoxDecoration(color: Colors.amber[600], borderRadius: BorderRadius.circular(8.0)),
 
-                        margin:EdgeInsets.only(bottom:15.0, right: 10.0),
+                        margin:EdgeInsets.only(top:15.0, right: 10.0),
                     ),
                     Container(
                         child: Text(
@@ -100,7 +100,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 .format(DateTime.fromMillisecondsSinceEpoch(int.parse(Doc['timestamp']))),
                             style: TextStyle(color: Colors.grey, fontSize: 12.0, fontStyle: FontStyle.italic),
                         ),
-                        margin: EdgeInsets.only(right: 10.0, top: 5.0, bottom: 15.0),
+                        margin: EdgeInsets.only(right: 10.0, top: 5.0, bottom: 25.0),
                     )
 
                 ],
