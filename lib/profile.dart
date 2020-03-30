@@ -88,7 +88,7 @@ class _ProfileState extends State<Profile> {
               TextField(
                 controller: controllerNickname,
                 decoration: InputDecoration(labelText: 'Display Name'),
-                onSubmitted: (value) {
+                onChanged: (value) {
                   setState(() {
                     nickname = value;
                   });
@@ -99,7 +99,7 @@ class _ProfileState extends State<Profile> {
                 decoration: InputDecoration(
                   labelText: 'About me',
                 ),
-                onSubmitted: (value) {
+                onChanged: (value) {
                   setState(() {
                     aboutme = value;
                   });

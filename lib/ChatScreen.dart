@@ -162,6 +162,7 @@ class _ChatScreenState extends State<ChatScreen> {
               "type":type
           });
           listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+            textEditingController.clear();
       }
       else
           {

@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   var usr;
   bool render()  {
-    bool res;
-    usr= _authenticationService.getUSer();
+    bool res=true;
+    usr= _authenticationService.getInstance().currentUser();
     if(usr == null)
       res=true;
     else
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         //scaffoldBackgroundColor: Colors.amber[200],
 
       ),
-      home:render()?Login():ChatList(),
+      home:(render()??true)?Login():ChatList(),
     routes: {
         '/chats':(context)=>ChatList(),
         '/login':(context)=>Login(),
