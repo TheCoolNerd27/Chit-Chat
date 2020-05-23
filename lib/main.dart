@@ -7,10 +7,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:chitchat/profile.dart';
 import 'package:chitchat/Chats.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import "package:pointycastle/export.dart" as crypt;
+import 'package:chitchat/DependencyProvider.dart';
 void main(){
   setupLocator();
 
-  runApp(MyApp());
+  runApp(
+      DependencyProvider(child:MyApp(),)
+  );
 
 }
 /*
@@ -72,11 +76,26 @@ class _LoginState extends State<Login> {
   FirebaseUser usern;
   SharedPreferences prefs;
   String _userID;
+
+  Future<crypt.AsymmetricKeyPair<crypt.PublicKey, crypt.PrivateKey>>
+  futureKeyPair;
+
+  /// The current [crypt.AsymmetricKeyPair]
+  crypt.AsymmetricKeyPair keyPair;
+
+  /// With the helper [RsaKeyHelper] this method generates a
+  /// new [crypto.AsymmetricKeyPair<crypto.PublicKey, crypto.PrivateKey>
+  crypt.AsymmetricKeyPair<crypt.PublicKey, crypt.PrivateKey>
+  getKeyPair() {
+    var keyHelper = DependencyProvider.of(context).getRsaKeyHelper();
+    return keyHelper.getRSA(keyHelper.exampleSecureRandom());
+  }
   void googleSignIn()
   async{
     prefs=await SharedPreferences.getInstance();
     var usr;
-    var res=await _authenticationService.signInWithGoogle();
+    keyPair=getKeyPair();
+    var res=await _authenticationService.signInWithGoogle(keyPair);
     print(res);
     if(res is bool)
     {

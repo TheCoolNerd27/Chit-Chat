@@ -3,6 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chitchat/Encryption.dart';
+import "package:pointycastle/export.dart";
+import 'package:shared_preferences/shared_preferences.dart';
+
 final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 class AuthenticationService {
@@ -29,9 +33,17 @@ class AuthenticationService {
         return udf;
 
     }
+    Future<SharedPreferences> getit()
+    async{
+        SharedPreferences prefs=await SharedPreferences.getInstance();
+        return prefs;
+    }
 
-    Future signInWithGoogle() async {
+
+    Future signInWithGoogle(AsymmetricKeyPair pair) async {
+        Crypto _crypto=new Crypto();
         try {
+            print('google');
             final GoogleSignInAccount googleUser = await googleSignIn.signIn();
             final GoogleSignInAuthentication googleAuth =
             await googleUser.authentication;
@@ -49,10 +61,22 @@ class AuthenticationService {
             assert(!user.isAnonymous);
             assert(await user.getIdToken() != null);
 
+
+
             if (authResult.additionalUserInfo.isNewUser) {
                 var ref = Firestore.instance.collection('Users').document(
                     user.uid);
-                ref.setData({"email": user.email, "Name": user.displayName,"Display Photo":user.photoUrl});
+                final public = pair.publicKey;
+                final private = pair.privateKey;
+                var pvt=_crypto.encodePrivateKeyToPem(private);
+                var pub=_crypto.encodePublicKeyToPem(public);
+                getit().then((onValue){
+                    onValue.setString("private", pvt);
+                });
+                ref.setData({"email": user.email, "Name": user.displayName,"Display Photo":user.photoUrl,"Public Key":pub});
+                var p=_crypto.parsePublicKeyFromPem(pub);
+                print(p);
+
             }
             else {
                 print('Welcome');
