@@ -6,9 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chitchat/Encryption.dart';
 import "package:pointycastle/export.dart";
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:chitchat/push_notifications.dart';
+import 'package:chitchat/service_locator.dart';
 final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
+final PushNotificationsManager _pushNotificationManager =
+locator<PushNotificationsManager>();
 class AuthenticationService {
 //    Future loginWithEmail(
 //        {@required String email, @required String password}) async {
@@ -70,10 +73,11 @@ class AuthenticationService {
                 final private = pair.privateKey;
                 var pvt=_crypto.encodePrivateKeyToPem(private);
                 var pub=_crypto.encodePublicKeyToPem(public);
+                var token=_pushNotificationManager.getToken();
                 getit().then((onValue){
-                    onValue.setString("private", pvt);
+                    onValue.setString(user.uid, pvt);
                 });
-                ref.setData({"email": user.email, "Name": user.displayName,"Display Photo":user.photoUrl,"Public Key":pub});
+                ref.setData({"email": user.email, "Name": user.displayName,"Display Photo":user.photoUrl,"Public Key":pub,"Token":token});
                 var p=_crypto.parsePublicKeyFromPem(pub);
                 print(p);
 

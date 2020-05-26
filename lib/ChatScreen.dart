@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
+import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:pointycastle/asymmetric/api.dart';
@@ -49,10 +50,10 @@ class _ChatScreenState extends State<ChatScreen> {
   void getUID() async {
       print("MMM");
      prefs = await SharedPreferences.getInstance();
-
+     var uid=prefs.get('uid');
       setState(() {
-          userId = prefs.get('uid');
-          privateKey=prefs.getString('private');
+          userId = uid;
+          privateKey=prefs.getString(uid);
       });
       //print(privateKey.substring(privateKey.length - 50));
       if (widget.peerId.compareTo(userId) == -1) {
@@ -67,17 +68,16 @@ class _ChatScreenState extends State<ChatScreen> {
   }
   Widget buildItem(BuildContext Context,DocumentSnapshot Doc) {
       //TODO:Decrypt Message here!!
-
-
+      var pvt = _crypto.parsePrivateKeyFromPem(privateKey);
+      var encrypter = Encrypter(RSA(privateKey: pvt));
       //print('KKKKKK$decrypted');
       if (Doc['idFrom'] == widget.peerId) {
           if (Doc['type'] == 0){
-              String content = Doc['content'];
-//              String encrypted = Doc['content'];
-//              Uint8List data = convertString(encrypted);
-//              var pvt = _crypto.parsePrivateKeyFromPem(privateKey);
-//              Uint8List bytes = _crypto.rsaDecrypt(pvt, data);
-//              String decrypted = convertUint8List(bytes);
+              //String content = Doc['content'];
+              String encrypted = Doc['content'];
+
+
+              String decrypted = encrypter.decrypt64(encrypted);
               return Container(
 
                   child: Column(
@@ -92,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                                   Container(
                                       child: Text(
-                                          "$content",
+                                          "$decrypted",
                                       ),
                                       padding: EdgeInsets.fromLTRB(
                                           15.0, 10.0, 15.0, 10.0),
@@ -176,12 +176,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
   else {
           if (Doc['type'] == 0){
-             String content= Doc['content'];
-//             String encrypted = Doc['content'];
-//              Uint8List data = convertString(encrypted);
-//              var pvt = _crypto.parsePrivateKeyFromPem(privateKey);
-//              Uint8List bytes = _crypto.rsaDecrypt(pvt, data);
-//              String decrypted = convertUint8List(bytes);
+             String content= Doc['content2'];
+             String decrypted = encrypter.decrypt64(content);
               return Container(
 
                   child: Column(
@@ -189,7 +185,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       children: <Widget>[
                           Container(
                               child: Text(
-                                  '$content',
+                                  '$decrypted',
                               ),
                               padding: EdgeInsets.fromLTRB(
                                   15.0, 10.0, 15.0, 10.0),
@@ -300,45 +296,56 @@ class _ChatScreenState extends State<ChatScreen> {
       return message;
   }
   void onMessageSent(String content,int type) {
+      //TODO:Encrypt Message Here!!
+      var public, pub, encBase64, encb64;
+      var encrypted, encrypter;
+      print("HHHHHHHH$content");
 
-          //TODO:Encrypt Message Here!!
-          var public, pub;
-          var encrypted,encrypter;
-          print("HHHHHHHH$content");
-          Uint8List data = convertString(content);
-          var ref2 = Firestore.instance.collection("Users")
-              .document(widget.peerId).get().then((doc) {
-//              pub = doc['Public Key'];
-              print("JJJJ$content");
-//              public = _crypto.parsePublicKeyFromPem(pub);
-//              encrypter=Encrypter(RSA(publicKey:public,privateKey:privateKey));
-//              encrypted=encrypter.encrypt(content);
-//              Uint8List bytes = _crypto.rsaEncrypt(public, data);
-//              encrypted = convertUint8List(bytes);
-          }).then((value) {
-              if (content.trim() != '') {
-                  var ref = Firestore.instance.collection('Chats')
-                      .document(chatId)
-                      .collection('Messages')
-                      .add({
+      var ref1 = Firestore.instance.collection("Users")
+          .document(userId).get().then((doc) {
+          pub = doc['Public Key'];
+          print("JJJJ$content");
+          public = _crypto.parsePublicKeyFromPem(pub);
 
-                      "content": content,
-                      "timestamp": DateTime
-                          .now()
-                          .millisecondsSinceEpoch
-                          .toString(),
-                      "idFrom": userId,
-                      "type": type
-                  });
-                  listScrollController.animateTo(
-                      0.0, duration: Duration(milliseconds: 300),
-                      curve: Curves.easeOut);
+          encrypter = Encrypter(RSA(publicKey: public));
+          encrypted = encrypter.encrypt(content);
+          encBase64 = base64.encode(encrypted.bytes);
+      }).then((snap){
+      var ref2 = Firestore.instance.collection("Users")
+          .document(widget.peerId).get().then((doc) {
+          pub = doc['Public Key'];
+          print("JJJJ$content");
+          public = _crypto.parsePublicKeyFromPem(pub);
+
+          encrypter = Encrypter(RSA(publicKey: public));
+          encrypted = encrypter.encrypt(content);
+          encb64=base64.encode(encrypted.bytes);
+      }).then((value) {
+          if (content.trim() != '') {
+              var ref = Firestore.instance.collection('Chats')
+                  .document(chatId)
+                  .collection('Messages')
+                  .add({
+
+                  "content": encb64,
+                  "content2":encBase64,
+                  "timestamp": DateTime
+                      .now()
+                      .millisecondsSinceEpoch
+                      .toString(),
+                  "idFrom": userId,
+                  "type": type
+              });
+              listScrollController.animateTo(
+                  0.0, duration: Duration(milliseconds: 300),
+                  curve: Curves.easeOut);
 //            textEditingController.clear();
-              }
-              else {
-                  Fluttertoast.showToast(msg: 'Nothing to send');
-              }
-          });
+          }
+          else {
+              Fluttertoast.showToast(msg: 'Nothing to send');
+          }
+      });
+  });
           textEditingController.clear();
 
   }

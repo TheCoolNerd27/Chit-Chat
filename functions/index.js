@@ -1,10 +1,21 @@
 const functions = require('firebase-functions');
 
 const admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
+
+var serviceAccount = require("./chitchat.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://chitchat-a6cff.firebaseio.com"
+});
 var obj=[];
 var chatid;
+const notification_options = {
+    priority: "high",
+    timeToLive: 60 * 60 * 24
+  };
 let db=admin.firestore();
+const options =  notification_options;
+const fcm = admin.messaging();
 exports.chatList=functions.auth.user().onCreate((user) => {
 
 	// const user = event.data;
@@ -51,4 +62,30 @@ exports.chatList=functions.auth.user().onCreate((user) => {
 
 
 });
+
+exports.notify=functions.firestore.document('Chats/{cid}/Messages/{mid}')
+                .onCreate((snapshot)=>{
+
+                const sentBy=snapshot.data().idFrom;
+                var rfn=db.collection('Users').doc(sentBy).get();
+                var name=rfn.data().Name;
+                const token=rfn.data().Token;
+                var pic="Display Photo";
+                const payload={
+                      notification: {
+                        title: 'New Message!',
+                        body: `${name} sent you a Message!`,
+                        image:rfn.data().pic,
+                        },
+                      data:{
+                        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+                        sound:'default',
+                        screen:'chats'
+
+
+                      }
+                    };
+
+                   fcm.sendToDevice(token, payload,options);
+                });
 

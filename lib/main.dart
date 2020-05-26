@@ -1,3 +1,4 @@
+import 'package:chitchat/push_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:chitchat/service_locator.dart';
 import 'package:chitchat/auth_service.dart';
@@ -9,6 +10,7 @@ import 'package:chitchat/Chats.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "package:pointycastle/export.dart" as crypt;
 import 'package:chitchat/DependencyProvider.dart';
+import 'package:chitchat/push_notifications.dart';
 void main(){
   setupLocator();
 
@@ -22,6 +24,8 @@ TODO:After Login Redirect to a Form to add Details about Me
  */
 final AuthenticationService _authenticationService =
 locator<AuthenticationService>();
+final PushNotificationsManager _pushNotificationManager =
+locator<PushNotificationsManager>();
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   var usr;
@@ -131,6 +135,7 @@ class _LoginState extends State<Login> {
                 }
               else
                 {
+                  _pushNotificationManager.init();
                   Navigator.pushNamed(context, '/chats');
                 }
 
