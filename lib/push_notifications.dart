@@ -31,12 +31,12 @@ class PushNotificationsManager {
 
 
 
-            // For testing purposes print the Firebase Messaging token
-             token = await _firebaseMessaging.getToken();
-            print("FirebaseMessaging token: $token");
+        // For testing purposes print the Firebase Messaging token
+        token = await _firebaseMessaging.getToken();
+        print("FirebaseMessaging token: $token");
 
 
-            _initialized = true;
+        _initialized = true;
 
         return token;
     }
