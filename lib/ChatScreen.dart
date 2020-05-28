@@ -298,6 +298,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void onMessageSent(String content,int type) {
       //TODO:Encrypt Message Here!!
       var public, pub, encBase64, encb64;
+      var nameFrom;
       var encrypted, encrypter;
       print("HHHHHHHH$content");
 
@@ -306,7 +307,7 @@ class _ChatScreenState extends State<ChatScreen> {
           pub = doc['Public Key'];
           print("JJJJ$content");
           public = _crypto.parsePublicKeyFromPem(pub);
-
+          nameFrom=doc['Name'];
           encrypter = Encrypter(RSA(publicKey: public));
           encrypted = encrypter.encrypt(content);
           encBase64 = base64.encode(encrypted.bytes);
@@ -329,11 +330,13 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   "content": encb64,
                   "content2":encBase64,
+                  "nameFrom":nameFrom,
                   "timestamp": DateTime
                       .now()
                       .millisecondsSinceEpoch
                       .toString(),
                   "idFrom": userId,
+                  "idTo":widget.peerId,
                   "type": type
               });
               listScrollController.animateTo(

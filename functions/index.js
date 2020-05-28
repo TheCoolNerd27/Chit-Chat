@@ -65,17 +65,20 @@ exports.chatList=functions.auth.user().onCreate((user) => {
 
 exports.notify=functions.firestore.document('Chats/{cid}/Messages/{mid}')
                 .onCreate((snapshot)=>{
-
-                const sentBy=snapshot.data().idFrom;
-                var rfn=db.collection('Users').doc(sentBy).get();
-                var name=rfn.data().Name;
-                const token=rfn.data().Token;
-                var pic="Display Photo";
-                const payload={
+                var token,pic,name,payload;
+                const sentTo=snapshot.data().idTo;
+                const sent=snapshot.data().idFrom;
+                name=snapshot.data().nameFrom;
+                var rfn=db.collection('Users').doc(sentTo);
+                rfn.get().then(async (snap)=>{
+                 
+                 token=await snap.data().Token;
+                 pic="Display Photo";
+                 payload={
                       notification: {
                         title: 'New Message!',
                         body: `${name} sent you a Message!`,
-                        image:rfn.data().pic,
+                        image:'https://firebasestorage.googleapis.com/v0/b/chitchat-a6cff.appspot.com/o/Media%2Fic_launcher-web.png?alt=media&token=4d49b8a1-e33e-43a8-aa9a-fc05ed6ba982'
                         },
                       data:{
                         click_action: 'FLUTTER_NOTIFICATION_CLICK',
@@ -85,7 +88,13 @@ exports.notify=functions.firestore.document('Chats/{cid}/Messages/{mid}')
 
                       }
                     };
+                    return null;
 
-                   fcm.sendToDevice(token, payload,options);
+                }).then(()=>{
+                  return fcm.sendToDevice(token, payload);
+                }).catch(err=>console.log(err));
+
+                
+
+                   
                 });
-
