@@ -1,6 +1,9 @@
 # chitchat
 
-A new Flutter application.
+A Chat application in Flutter. 
+- All Messages Encrypted
+- Video Call to any contact
+- Receive Notifications whenever you get a new Message!
 
 ## Getting Started
 
