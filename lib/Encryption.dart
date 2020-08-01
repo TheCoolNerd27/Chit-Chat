@@ -148,7 +148,7 @@ class Crypto {
         return rsaPublicKey;
     }
 
-    parsePrivateKeyFromPem(pemString) {
+     parsePrivateKeyFromPem(pemString) {
         List<int> privateKeyDER = decodePEM(pemString);
         var asn1Parser = new ASN1Parser(privateKeyDER);
         var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
@@ -196,7 +196,7 @@ class Crypto {
         topLevelSeq.add(publicKeySeqBitString);
         var dataBase64 = base64.encode(topLevelSeq.encodedBytes);
 
-        return """-----BEGIN PUBLIC KEY-----\r\n$dataBase64\r\n-----END PUBLIC KEY-----""";
+        return "-----BEGIN PUBLIC KEY-----\r\n$dataBase64\r\n-----END PUBLIC KEY-----";
     }
 
     encodePrivateKeyToPem(RSAPrivateKey privateKey) {
@@ -238,7 +238,7 @@ class Crypto {
         topLevelSeq.add(publicKeySeqOctetString);
         var dataBase64 = base64.encode(topLevelSeq.encodedBytes);
 
-        return """-----BEGIN PRIVATE KEY-----\r\n$dataBase64\r\n-----END PRIVATE KEY-----""";
+        return "-----BEGIN PRIVATE KEY-----\r\n$dataBase64\r\n-----END PRIVATE KEY-----";
     }
 
 

@@ -65,8 +65,8 @@ class _ChatListState extends State<ChatList> {
     return new ListTile(
         leading:
             CircleAvatar(backgroundImage: NetworkImage(Doc["Display Photo"])),
-        title: new Text(Doc['Display Name']),
-        subtitle: new Text(Doc['About Me']),
+        title: new Text(Doc['Display Name']??"Loading.."),
+        subtitle: new Text(Doc['About Me']??"Loading..."),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatScreen(Doc.documentID,Doc)));
         });

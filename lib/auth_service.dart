@@ -67,19 +67,26 @@ class AuthenticationService {
 
 
             if (authResult.additionalUserInfo.isNewUser) {
+                print("New User");
                 var ref = Firestore.instance.collection('Users').document(
                     user.uid);
                 final public = pair.publicKey;
                 final private = pair.privateKey;
-                var pvt=_crypto.encodePrivateKeyToPem(private);
-                var pub=_crypto.encodePublicKeyToPem(public);
-                var token=_pushNotificationManager.getToken();
-                getit().then((onValue){
-                    onValue.setString(user.uid, pvt);
-                });
-                ref.setData({"email": user.email, "Name": user.displayName,"Display Photo":user.photoUrl,"Public Key":pub,"Token":token});
+                var pvt= _crypto.encodePrivateKeyToPem(private);
+                var pub= _crypto.encodePublicKeyToPem(public);
+                var token=await _pushNotificationManager.getToken();
+                print("ID${user.uid}");
+                var pers=await getit();
+                    pers.setString(user.uid, pvt);
+                print('Keys:$pub');
+
+
+
+
+        ref.setData({"email": user.email,"About Me":null, "Name": user.displayName,"Display Photo":user.photoUrl,"Public Key":pub,"Token":token});
+
                 var p=_crypto.parsePublicKeyFromPem(pub);
-                print(p);
+
 
             }
             else {

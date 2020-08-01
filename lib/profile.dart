@@ -19,7 +19,7 @@ class _ProfileState extends State<Profile> {
   String nickname, aboutme;
   TextEditingController controllerNickname;
   TextEditingController controllerAboutMe;
-
+  BuildContext context;
   @override
   void initState() {
     // TODO: implement initState
@@ -32,7 +32,7 @@ class _ProfileState extends State<Profile> {
     controllerAboutMe = new TextEditingController();
   }
 
-  void submitData() async{
+  void submitData(context) async{
 
     var ref = Firestore.instance
         .collection("Users")
@@ -64,7 +64,7 @@ class _ProfileState extends State<Profile> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("My Profile"),
@@ -109,7 +109,7 @@ class _ProfileState extends State<Profile> {
                 height: 15.0,
               ),
               RaisedButton(
-                  onPressed: () => submitData(),
+                  onPressed: () => submitData(context),
                   child: Text("Submit"),
                   textColor: Colors.black,
                   color: Colors.orange),

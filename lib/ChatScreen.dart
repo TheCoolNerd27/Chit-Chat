@@ -48,7 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void getUID() async {
-      print("MMM");
+     // print("MMM");
      prefs = await SharedPreferences.getInstance();
      var uid=prefs.get('uid');
       setState(() {

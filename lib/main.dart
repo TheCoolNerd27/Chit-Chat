@@ -9,13 +9,13 @@ import 'package:chitchat/profile.dart';
 import 'package:chitchat/Chats.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "package:pointycastle/export.dart" as crypt;
-import 'package:chitchat/DependencyProvider.dart';
-import 'package:chitchat/push_notifications.dart';
+
+import 'package:chitchat/Encryption.dart';
 void main(){
   setupLocator();
 
   runApp(
-      DependencyProvider(child:MyApp(),)
+      MyApp()
   );
 
 }
@@ -26,6 +26,7 @@ final AuthenticationService _authenticationService =
 locator<AuthenticationService>();
 final PushNotificationsManager _pushNotificationManager =
 locator<PushNotificationsManager>();
+final Crypto _crypto=locator<Crypto>();
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   var usr;
@@ -80,7 +81,7 @@ class _LoginState extends State<Login> {
   FirebaseUser usern;
   SharedPreferences prefs;
   String _userID;
-
+  BuildContext context;
   Future<crypt.AsymmetricKeyPair<crypt.PublicKey, crypt.PrivateKey>>
   futureKeyPair;
 
@@ -91,10 +92,10 @@ class _LoginState extends State<Login> {
   /// new [crypto.AsymmetricKeyPair<crypto.PublicKey, crypto.PrivateKey>
   crypt.AsymmetricKeyPair<crypt.PublicKey, crypt.PrivateKey>
   getKeyPair() {
-    var keyHelper = DependencyProvider.of(context).getRsaKeyHelper();
-    return keyHelper.getRSA(keyHelper.exampleSecureRandom());
+
+    return _crypto.getRSA(_crypto.exampleSecureRandom());
   }
-  void googleSignIn()
+  void googleSignIn(context)
   async{
     prefs=await SharedPreferences.getInstance();
     var usr;
@@ -164,7 +165,7 @@ class _LoginState extends State<Login> {
 
   }
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Scaffold(
         appBar: AppBar(
         title: Text("Login"),),
@@ -176,7 +177,7 @@ class _LoginState extends State<Login> {
           padding: EdgeInsets.all(15.0),
           onPressed: () {
 
-            googleSignIn();
+            googleSignIn(context);
           },
 
           child: Row(
