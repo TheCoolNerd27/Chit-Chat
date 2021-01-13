@@ -4,6 +4,17 @@ A Chat application in Flutter.
 - All Messages Encrypted
 - Video Call to any contact
 - Receive Notifications whenever you get a new Message!
+<p float="left">
+  <img src="https://github.com/TheCoolNerd27/Chit-Chat/blob/master/assets/images/image-1.jpeg" width="250" />
+  
+  <img src="https://github.com/TheCoolNerd27/Chit-Chat/blob/master/assets/images/image-2.jpeg" width="250" /> 
+
+</p>
+<p float="left">
+  <img src="https://github.com/TheCoolNerd27/Chit-Chat/blob/master/assets/images/image-4.jpeg" width="250" />
+  
+  <img src="https://github.com/TheCoolNerd27/Chit-Chat/blob/master/assets/images/image-3.jpeg" width="250" />
+</p>
 
 ## Getting Started
 
